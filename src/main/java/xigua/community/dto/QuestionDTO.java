@@ -1,10 +1,10 @@
-package xigua.community.model;
+package xigua.community.dto;
 
 import lombok.Data;
+import xigua.community.model.User;
 
 @Data
-public class Quesiton {
-
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -15,5 +15,5 @@ public class Quesiton {
     private Integer viewCount;
     private Integer likeCount;
     private Integer commentCount;
-
+    private User user;
 }
