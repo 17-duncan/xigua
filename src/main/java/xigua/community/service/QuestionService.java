@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xigua.community.dto.PaginationDTO;
 import xigua.community.dto.QuestionDTO;
+import xigua.community.exception.CustomizeErrorCode;
+import xigua.community.exception.CustomizeException;
 import xigua.community.mapper.QuestionMapper;
 import xigua.community.mapper.UserMapper;
 import xigua.community.model.Quesiton;
@@ -116,6 +118,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Integer id) {
         Question quesiton = questionMapper.selectByPrimaryKey(id);
+        if (quesiton == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(quesiton,questionDTO);
         User user = userMapper.selectByPrimaryKey(quesiton.getCreator());
@@ -139,7 +144,10 @@ public class QuestionService {
             QuestionExample example = new QuestionExample();
             example.createCriteria()
                     .andIdEqualTo(quesiton.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+            if (updated != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
