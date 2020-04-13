@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import xigua.community.dto.QuestionDTO;
 import xigua.community.mapper.QuestionMapper;
 import xigua.community.model.Quesiton;
 import xigua.community.model.User;
+import xigua.community.service.QuestionService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +21,20 @@ public class PublishController {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionService questionService;
+
+    @GetMapping ("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id,
+                       Model model){
+        QuestionDTO quesiton = questionService.getById(id);
+        model.addAttribute("title",quesiton.getTitle());
+        model.addAttribute("description",quesiton.getDescription());
+        model.addAttribute("tag",quesiton.getTag());
+        model.addAttribute("id",quesiton.getId());
+        return "publish";
+    }
 
 
     @GetMapping("/publish")
@@ -30,6 +47,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
+            @RequestParam(value = "id", required = false) Integer id,
             HttpServletRequest request,
             Model model){
         model.addAttribute("title",title);
@@ -62,7 +80,8 @@ public class PublishController {
         quesiton.setCreator(user.getId());
         quesiton.setGmtCreate(System.currentTimeMillis());
         quesiton.setGmtModified(quesiton.getGmtCreate());
-        questionMapper.create(quesiton);
+        quesiton.setId(id);
+        questionService.createOrUpdate(quesiton);
         return "redirect:/";
     }
 

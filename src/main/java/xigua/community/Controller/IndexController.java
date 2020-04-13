@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import xigua.community.dto.PaginationDTO;
-import xigua.community.service.QusetionService;
+import xigua.community.service.QuestionService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +15,7 @@ public class IndexController {
 
 
     @Autowired
-    private QusetionService qusetionService;
+    private QuestionService questionService;
 
 
     @GetMapping("/")
@@ -24,7 +24,7 @@ public class IndexController {
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
                         @RequestParam(name = "size", defaultValue = "5") Integer size){
 
-        PaginationDTO pagination = qusetionService.list(page,size);
+        PaginationDTO pagination = questionService.list(page,size);
             model.addAttribute("pagination",pagination);
         return "index";
 

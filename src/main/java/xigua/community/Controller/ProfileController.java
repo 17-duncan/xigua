@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import xigua.community.dto.PaginationDTO;
 import xigua.community.model.User;
-import xigua.community.service.QusetionService;
+import xigua.community.service.QuestionService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     @Autowired
-    private QusetionService qusetionService;
+    private QuestionService questionService;
 
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
@@ -36,7 +36,7 @@ public class ProfileController {
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","最新回复");
         }
-        PaginationDTO paginationDTO = qusetionService.list(user.getId(), page, size);
+        PaginationDTO paginationDTO = questionService.list(user.getId(), page, size);
         model.addAttribute("pagination",paginationDTO);
         return "profile";
     }

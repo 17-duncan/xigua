@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class QusetionService {
+public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
@@ -112,5 +112,18 @@ public class QusetionService {
         User user = userMapper.findById(quesiton.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void createOrUpdate(Quesiton quesiton) {
+        if (quesiton.getId() == null){
+            //创建
+            quesiton.setGmtCreate(System.currentTimeMillis());
+            quesiton.setGmtModified(quesiton.getGmtCreate());
+            questionMapper.create(quesiton);
+        }else {
+            //更新
+            quesiton.setGmtModified(quesiton.getGmtCreate());
+            questionMapper.update(quesiton);
+        }
     }
 }
