@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import xigua.community.dto.QuestionDTO;
 import xigua.community.mapper.QuestionMapper;
-import xigua.community.model.Quesiton;
+import xigua.community.model.Question;
 import xigua.community.model.User;
 import xigua.community.service.QuestionService;
 
@@ -26,7 +26,7 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping ("/publish/{id}")
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model){
         QuestionDTO quesiton = questionService.getById(id);
         model.addAttribute("title",quesiton.getTitle());
@@ -47,7 +47,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false) String title,
             @RequestParam(value = "description",required = false) String description,
             @RequestParam(value = "tag",required = false) String tag,
-            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "id", required = false) Long id,
             HttpServletRequest request,
             Model model){
         model.addAttribute("title",title);
@@ -73,7 +73,7 @@ public class PublishController {
                 return "publish";
             }
 
-        Quesiton quesiton = new Quesiton();
+        Question quesiton = new Question();
         quesiton.setTitle(title);
         quesiton.setDescription(description);
         quesiton.setTag(tag);

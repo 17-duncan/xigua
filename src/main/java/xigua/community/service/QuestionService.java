@@ -8,9 +8,9 @@ import xigua.community.dto.PaginationDTO;
 import xigua.community.dto.QuestionDTO;
 import xigua.community.exception.CustomizeErrorCode;
 import xigua.community.exception.CustomizeException;
+import xigua.community.mapper.QuestionExtMapper;
 import xigua.community.mapper.QuestionMapper;
 import xigua.community.mapper.UserMapper;
-import xigua.community.model.Quesiton;
 import xigua.community.model.Question;
 import xigua.community.model.QuestionExample;
 import xigua.community.model.User;
@@ -25,6 +25,8 @@ public class QuestionService {
     private QuestionMapper questionMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
 
     public PaginationDTO list(Integer page, Integer size) {
@@ -69,7 +71,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
 
@@ -116,7 +118,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question quesiton = questionMapper.selectByPrimaryKey(id);
         if (quesiton == null){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -128,11 +130,14 @@ public class QuestionService {
         return questionDTO;
     }
 
-    public void createOrUpdate(Quesiton quesiton) {
+    public void createOrUpdate(Question quesiton) {
         if (quesiton.getId() == null){
             //创建
             quesiton.setGmtCreate(System.currentTimeMillis());
             quesiton.setGmtModified(quesiton.getGmtCreate());
+            quesiton.setViewCount(0);
+            quesiton.setLikeCount(0);
+            quesiton.setCommentCount(0);
             questionMapper.insert(quesiton);
         }else {
             //更新
@@ -149,5 +154,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Long id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }
